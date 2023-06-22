@@ -237,6 +237,21 @@
         </div>
       </div>
       <div class="selection">
+        <!-- <div class="result-box">
+          <h5>抽奖结果</h5>
+          <div v-for="(r,index) in results" class="item-box">
+            第{{index+1}}次抽奖结果：{{r.name}}
+          </div>
+          <hr />
+        </div> -->
+        <div class="list-box">
+          <h3>抽奖选项</h3>
+          <br />
+          <div v-for="(l,index) in list" class="item-box">
+            {{l.name}} <button @click="removeList(l,index)">移除</button>
+          </div>
+        </div>
+
         <div>
           <input
             v-model="input"
@@ -245,9 +260,6 @@
             @keyup.enter="enter"
           />
           <button @click="enter">添加</button>
-        </div>
-        <div v-for="(l,index) in list" class="item-box">
-          {{l.name}} <button @click="removeList(l,index)">移除</button>
         </div>
       </div>
     </div>
@@ -263,27 +275,28 @@
           listFragment: [],
           list: [
             {
-              name: "youngs001",
+              name: "尊宝",
             },
             {
-              name: "youngs002",
+              name: "螺蛳粉",
             },
             {
-              name: "youngs003",
+              name: "酸菜鱼",
             },
             {
-              name: "youngs004",
+              name: "凉皮",
             },
             {
-              name: "youngs005",
+              name: "煎饼",
             },
             {
-              name: "youngs006",
+              name: "饺子",
             },
             {
-              name: "youngs007",
+              name: "煮饭",
             },
           ],
+          results: [],
         },
         //监听属性 类似于data概念
         computed: {
@@ -542,10 +555,12 @@
             setTimeout(() => {
               this.isGoing = false;
               console.log("中奖结果：", randomRate, res);
+              this.results.push(res);
             }, rotateSpeed * 1000);
           },
         },
         mounted: function () {
+          this.initLightFragment();
           this.init();
         },
       });
