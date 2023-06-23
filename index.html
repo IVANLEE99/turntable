@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <title>简单转盘</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天吃啥好呢？纠结～纠结～纠结～</title>
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> -->
     <script src="./cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
@@ -45,7 +46,13 @@
           transform: scale(1);
         }
       }
-
+      #app {
+        margin: 20px 0;
+      }
+      h1.title {
+        margin: 20px;
+        text-align: center;
+      }
       .turntable-wrap {
         position: relative;
         overflow: hidden;
@@ -55,6 +62,9 @@
         border: 7px solid #b2a98d;
         border-radius: 50%;
         box-shadow: 0 0 20px #b2a98d;
+        width: 90vw;
+        height: 90vw;
+        margin: 0 auto;
       }
       .turntable-wrap .light {
         position: absolute;
@@ -98,9 +108,9 @@
 
       .turntable-wrap .turntable {
         position: absolute;
-        margin: 20px;
-        width: 300px;
-        height: 300px;
+        margin: 6%;
+        width: 88%;
+        height: 88%;
         border-radius: 50%;
         background: #fff;
       }
@@ -208,10 +218,16 @@
         border-color: transparent transparent #b9a046 transparent;
         border-width: 25px 10px 25px 10px;
       }
+      .selection {
+        width: 50%;
+        margin: 0 auto;
+        margin-top: 50px;
+      }
     </style>
   </head>
   <body>
     <div id="app">
+      <h1 class="title">今天吃啥子,一转你就知</h1>
       <div class="turntable-wrap">
         <div class="light" id="turntable_light">
           <span v-for="light in lightFragment" :style="light.style"></span>
@@ -233,33 +249,39 @@
           </ul>
         </div>
         <div class="pointer disabled" id="turntable_pointer" @click="gameStart">
-          点击抽奖
+          点击转转
         </div>
       </div>
       <div class="selection">
-        <!-- <div class="result-box">
-          <h5>抽奖结果</h5>
-          <div v-for="(r,index) in results" class="item-box">
-            第{{index+1}}次抽奖结果：{{r.name}}
-          </div>
-          <hr />
-        </div> -->
-        <div class="list-box">
-          <h3>抽奖选项</h3>
+        <div v-if="results.length" class="result-box">
+          <h3>转转结果({{ results.length }}次)</h3>
           <br />
-          <div v-for="(l,index) in list" class="item-box">
-            {{l.name}} <button @click="removeList(l,index)">移除</button>
+          <div v-for="(r,index) in results" class="item-box">
+            第{{index+1}}次转转结果：{{r.name}}
           </div>
+          <br />
+          <hr />
+          <br />
         </div>
+        <div class="list-div-box">
+          <div class="list-box">
+            <h3>转转选项({{ list.length }}个)</h3>
+            <br />
+            <div v-for="(l,index) in list" class="item-box">
+              {{l.name}} <button @click="removeList(l,index)">移除</button>
+            </div>
+          </div>
 
-        <div>
-          <input
-            v-model="input"
-            type="text"
-            placeholder="请输入,回车添加"
-            @keyup.enter="enter"
-          />
-          <button @click="enter">添加</button>
+          <div>
+            <br />
+            <input
+              v-model="input"
+              type="text"
+              placeholder="请输入,回车添加"
+              @keyup.enter="enter"
+            />
+            <button @click="enter">添加</button>
+          </div>
         </div>
       </div>
     </div>
@@ -344,8 +366,6 @@
           },
           initBgFragment() {
             this.bgFragment = [];
-            // 初始化转盘背景、转盘上的中奖图（用不同背景色代替）
-            // let giftFragment = document.createDocumentFragment();
             for (let i = 0; i < this.itemNum; i++) {
               let deg = (360 / this.itemNum) * i;
               this.bgFragment.push({
@@ -355,159 +375,23 @@
                   "transform-origin": "center bottom",
                 },
               });
-
-              // let giftItem = document.createElement("li");
-              // giftItem.style.transform = `rotate(${deg}deg)`;
-              // giftItem.className = this.typeClassMap[this.lottery[i].type];
-              // let span = document.createElement("span");
-              // // span.innerHTML = this.typeMap[this.lottery[i].type];
-              // span.innerHTML = this.lottery[i].name;
-              // giftItem.appendChild(span);
-              // giftFragment.appendChild(giftItem);
             }
-            // this.bg.appendChild(bgFragment);
           },
           initListFragment() {
             this.listFragment = [];
-            // let giftFragment = document.createDocumentFragment();
             for (let i = 0; i < this.itemNum; i++) {
-              // let bgItem = document.createElement("li");
               let deg = (360 / this.itemNum) * i;
-              // bgItem.style.transform = `rotate(${deg}deg)`;
-              // bgFragment.appendChild(bgItem);
               this.listFragment.push({
                 name: this.list[i].name,
                 style: {
                   transform: `rotate(${deg}deg)`,
                 },
               });
-              // let giftItem = document.createElement("li");
-              // giftItem.style.transform = `rotate(${deg}deg)`;
-              // giftItem.className = this.typeClassMap[this.lottery[i].type];
-              // let span = document.createElement("span");
-              // span.innerHTML = this.typeMap[this.lottery[i].type];
-              // span.innerHTML = this.lottery[i].name;
-              // giftItem.appendChild(span);
-              // giftFragment.appendChild(giftItem);
             }
-            // this.bg.appendChild(bgFragment);
-            // this.gift.appendChild(giftFragment);
           },
           init() {
             this.initBgFragment();
             this.initListFragment();
-            // // 单例模式，转盘唯一，用对象字面量方式表示
-            // let turntable = {
-            //   itemNum: this.list.length || 6, // 转盘平均分几块
-
-            //   lightNum: 18, // 转盘上的灯
-            //   light: null, // 转盘旋转灯容器
-
-            //   turntable: null, // 转盘
-
-            //   bg: null, // 转盘背景
-
-            //   gift: null, // 转盘上的中奖结果图
-
-            //   pointer: null, // 转盘指针
-
-            //   lottery: [], // 中奖数据
-
-            //   typeMap: { 1: "¥", 2: "谢谢参与" },
-            //   typeClassMap: { 1: "", 2: "no-gift" },
-
-            //   isGoing: false, // 游戏是否开始
-
-            //   // init() {
-            //   //   if (!this.lottery.length) {
-            //   //     this.pointer.style.display = "none";
-            //   //     throw new Error("请设置中奖结果数据");
-            //   //   }
-            //   //   // 给点击抽奖按钮添加点击事件
-            //   //   // this.pointer.onclick = this.gameStart.bind(this);
-            //   // },
-
-            //   // gameStart() {
-            //   //   if (this.isGoing) {
-            //   //     return;
-            //   //   }
-            //   //   this.isGoing = true;
-
-            //   //   // 1. 随机中奖结果
-            //   //   // 从1-100之间得到一个随机数，看这个随机数在中奖设置的范围，得到最终中奖的项
-            //   //   let randomRate = ~~(Math.random() * 100); // ~~ == Math.floor()
-            //   //   // 设置中奖数据的概率范围
-            //   //   let num = 0;
-            //   //   this.lottery.forEach((item) => {
-            //   //     item.min = num;
-            //   //     num += item.rate;
-            //   //     item.max = num;
-            //   //   });
-            //   //   // 根据随机数，得到中奖结果
-            //   //   let res = this.lottery.filter((item) => {
-            //   //     return randomRate >= item.min && randomRate < item.max;
-            //   //   })[0];
-            //   //   // 这儿可以根据实际情况，可重置中奖结果
-
-            //   //   // 2. 计算旋转角度, 需要多转5圈，达转1圈用时1s, 到旋转的效果
-            //   //   let rotateItemDeg =
-            //   //     (res.location - 1) * (360 / this.lottery.length); // 每个item旋转角度, 第一个不用旋转
-            //   //   let rotate = rotateItemDeg + 5 * 360;
-            //   //   let rotateSpeed = ((rotateItemDeg / 360) * 1 + 5).toFixed(2);
-            //   //   // 重置转盘样式
-            //   //   this.turntable.removeAttribute("style");
-            //   //   // 保证下一次旋转动画生效
-            //   //   setTimeout(() => {
-            //   //     this.turntable.style.transform = `rotate(${rotate}deg)`;
-            //   //     this.turntable.style.transition = `transform ${rotateSpeed}s ease-out`;
-            //   //   }, 10);
-
-            //   //   // 3. 动画结束，显示中奖结果，中奖结果如何显示，视实际情况而定
-            //   //   setTimeout(() => {
-            //   //     this.isGoing = false;
-            //   //     console.log(
-            //   //       "中奖结果：",
-            //   //       randomRate,
-            //   //       res,
-            //   //       this.typeMap[res.type]
-            //   //     );
-            //   //   }, rotateSpeed * 1000);
-            //   // },
-            // };
-
-            // let lottery = [] || [
-            //   {
-            //     location: 1, // 位置
-            //     type: 1, // 中奖
-            //     rate: 30,
-            //   },
-            //   {
-            //     location: 2,
-            //     type: 2, // 未中奖
-            //     rate: 20,
-            //   },
-            //   { location: 3, type: 1, rate: 10 },
-            //   { location: 4, type: 2, rate: 20 },
-            //   { location: 5, type: 1, rate: 10 },
-            //   { location: 6, type: 2, rate: 10 },
-            // ];
-            // let rate = this.list.length ? 100 / this.list.length : 100;
-            // this.list.forEach((item, index) => {
-            //   lottery.push({
-            //     location: index,
-            //     type: index,
-            //     rate,
-            //     name: item.name,
-            //   });
-            // });
-
-            // turntable.turntable = document.querySelector("#turntable");
-            // turntable.light = document.querySelector("#turntable_light");
-            // turntable.bg = document.querySelector("#turntable_bg");
-            // turntable.gift = document.querySelector("#turntable_gift");
-            // turntable.pointer = document.querySelector("#turntable_pointer");
-            // turntable.lottery = lottery;
-            // turntable.init();
           },
           gameStart() {
             if (this.isGoing || !this.itemNum) {
@@ -528,19 +412,16 @@
               obj.max = num;
               return obj;
             });
-            // this.lottery.forEach((item) => {
-            //   item.min = num;
-            //   num += item.rate;
-            //   item.max = num;
-            // });
+
             // 根据随机数，得到中奖结果
             let res = lottery.filter((item) => {
               return randomRate >= item.min && randomRate < item.max;
             })[0];
             // 这儿可以根据实际情况，可重置中奖结果
 
-            // 2. 计算旋转角度, 需要多转5圈，达转1圈用时1s, 到旋转的效果
-            let rotateItemDeg = (res.location - 1) * (360 / lottery.length); // 每个item旋转角度, 第一个不用旋转
+            // 2. 计算旋转角度, 需要多转5圈，达转1圈用时1s, 到旋转的效果 逆着转的
+            let rotateItemDeg =
+              (lottery.length - res.location) * (360 / lottery.length); // 每个item旋转角度, 第一个不用旋转
             let rotate = rotateItemDeg + 5 * 360;
             let rotateSpeed = ((rotateItemDeg / 360) * 1 + 5).toFixed(2);
             // 重置转盘样式
@@ -554,7 +435,13 @@
             // 3. 动画结束，显示中奖结果，中奖结果如何显示，视实际情况而定
             setTimeout(() => {
               this.isGoing = false;
-              console.log("中奖结果：", randomRate, res);
+              console.log(
+                "中奖结果：",
+                rotateItemDeg,
+                randomRate,
+                res,
+                lottery
+              );
               this.results.push(res);
             }, rotateSpeed * 1000);
           },
